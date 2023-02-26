@@ -2,6 +2,7 @@
 import random
 import time
 import sys
+from termcolor import colored, cprint
 
 # character-by-character printing for analog effect.
 # source: https://stackoverflow.com/questions/9246076/how-to-print-one-character-at-a-time-on-one-line 
@@ -11,30 +12,22 @@ def sprint(s):
         sys.stdout.flush()
         time.sleep(0.02)
 
-# Welcome message - no animation
-def welcome():
-    welcome_line1 = " Welcome to the Food Repository "
-    welcome_line2 = "   Item Retrieval Interface!   "
-    blank_line = " "*32
-    print("\n")
-    print("#"*50)
-    print("#"*50)
-    print(blank_line.center(50, "#"))
-    print(welcome_line1.center(50, "#"))
-    print(welcome_line2.center(50, "#"))
-    print(blank_line.center(50, "#"))
-    print("#"*50)
-    print("#"*50)
-
 # Welcome message - with animation
 def welcome2():
-    welcome_txt = " Welcome to the Food Repository! "
+    welcome_line1 = " Welcome to the Food Repository "
+    welcome_line2 = "   Item Retrieval Interface!    "
+    blank_line = " "*32
     print("\n")
     sprint("#"*50 + "\n")
     sprint("#"*50 + "\n")
-    sprint(welcome_txt.center(50, "#") + "\n")
+    sprint(blank_line.center(50, "#") + "\n")
+    sprint(welcome_line1.center(50, "#") + "\n")
+    sprint(welcome_line2.center(50, "#") + "\n")
+    sprint(blank_line.center(50, "#") + "\n")
     sprint("#"*50 + "\n")
     sprint("#"*50 + "\n")
+    print("\nYour order will be retrieved from the warehouse,\
+    \nand credits automatically deducted from your account.")
 
 # function for printing dict output in a box - no animation
 def box_print(x):
@@ -66,10 +59,10 @@ def box_print(x):
 
 # function for printing dict output in a box - with animation 
 def box_print2(x):
-    width = 50
+    width = 58
     blank_line = "#" + " "*(width - 2) + "#"
     title = "#" + "AVAILABLE TODAY".center(width - 2) + "#"
-    sprint("\n")
+    print("\n")
     sprint("#"*width + "\n")
     print(blank_line)
     sprint(title + "\n")
@@ -77,19 +70,27 @@ def box_print2(x):
     
     longest_key = max(daily_offering.keys(), key=len)
 
+    counter = 1
     for k, v in daily_offering.items():
-        standard_entry = "#   " + f"{k}" +" "*10 + f"{v}"
-        shorter_entry = "#   " + f"{k}" +" "*10 + " "*(len(longest_key) - len(k)) +f"{v}"
-        standard_closer = " "*(width - len(standard_entry) - 1) + "credits #"
-        shorter_closer = " "*(width - len(shorter_entry) - 1) + " credits #"
+        standard_entry = f"#    {counter}. {k}" +" "*10 + f"{v} credits"
+        shorter_entry = f"#    {counter}. {k}" +" "*10 + " "*(len(longest_key) - len(k)) +f"{v} credits"
+        standard_closer = " "*(width - len(standard_entry) - 1) + "#"
+        shorter_closer = " "*(width - len(shorter_entry) - 1) + "#"
         if k == longest_key:
             sprint(standard_entry + standard_closer + "\n")
+            counter += 1
         else:
             sprint(shorter_entry + shorter_closer + "\n")
+            counter += 1
     print(blank_line)
     sprint("#"*width + "\n")
 
+def balance():
+    print(f"You have {credits} credits.")
+
 def interactive():
+    global credits
+    global total
     user_input = True
     while user_input:
         box_print(numbered_offering)
@@ -105,9 +106,10 @@ def interactive():
         else:
             prompt = int(prompt)
             foodprice = numbered_offering.get(prompt)
-            print(f"{foodprice[0].capitalize()} costs {foodprice[1]} credits.")
+            print(f"1 unit of {foodprice[0]} costs {foodprice[1]} credits.")
             if credits < foodprice[1]:
-                print(f"Insufficient credits ({credits}).")
+                cprint(f"\nInsufficient credits ({credits})", "red", attrs=["bold"])
+                print("Choose something else.")
             else:
                 approval = input("Order? (y/n) ")
                 if approval.lower() == "y":
@@ -119,12 +121,39 @@ def interactive():
                 elif approval.lower() == "n":
                     user_input == True
 
-def balance():
-    print(f"You have {credits} credits.")
-    
+# Summarize the order - with animation
+def order_summary2():
+    width = 40
+    blank_line = "#" + " "*(width - 2) + "#"
+    title = "#" + "ORDER SUMMARY".center(width - 2) + "#"
+    print("\n")
+    sprint("#"*width + "\n")
+    sprint(blank_line + "\n")
+    sprint(title + "\n")
+    sprint(blank_line + "\n")
+    sprint("#" + "You bought:".center(width - 2) + "#" + "\n")
+    sprint(blank_line + "\n")
+    if order:
+        order_set = set()
+        for item in order:
+            if order.count(item) == 1:
+                order_set.add(f"1 unit of {item}")
+            elif order.count(item) == 2:
+                order_set.add(f"2 units of {item}")
+            else:
+                order_set.add(f"Several units of {item}")
+        for item in order_set:
+            sprint("#" + f"{item}".center(width - 2) + "#" + "\n")
+    else:
+        print("#" + "Nothing".center(width - 2) + "#" + "\n")
+    print(blank_line)
+    sprint("#" + f"You spent {total} credits.".center(width - 2) + "#\n")
+    print(blank_line)
+    print("#"*width)
+
 # Declare initial variables
 preparations = {"canned", "boiled", "preserved", "fermented", "powdered", "gluten-free", "dehydrated", "pickled", "frozen", "salted", "reconstituted", "gelatinated", "irradiated", "salvaged", "cloned", "mutant"}
-foods = {"lichen", "bananas", "hog jowl", "fish", "bird eggs", "pasta", "broth", "onions", "berries", "shellfish", "cheese", "cow's milk", "squash", "yeast protein", "tree bark", "slime", "rat"}
+foods = {"lichen", "bananas", "hog jowl", "mudfish", "bird eggs", "pasta", "broth", "onions", "berries", "shellfish", "cheese", "cow's milk", "squash", "yeast protein", "tree bark", "slime", "rat"}
 goods = set()
 prices = set()
 credits = 100
@@ -135,16 +164,15 @@ total = 0
 while len(preparations) > 8:                                #Not all elements are used each time for variety
     goods.add(preparations.pop() + " " + foods.pop())
 while len(prices) < len(goods):
-    prices.add((random.randint(10, 50)))     #Generate some prices
+    prices.add((random.randint(10, 50)))                    #Generate some prices
 daily_offering = dict(zip(goods,prices))                    #Associate goods with prices
 numbers = list(range(1, 10))
 numbered_offering = dict(zip(numbers,daily_offering.items()))
 print(numbered_offering)
 
-welcome()
 
-print("Orders input here will be retrieved from the warehouse,\
-    \nand credits will be automatically deducted from your account.")
 
-print(order)
-print(total)
+
+welcome2()
+interactive()
+order_summary2()
