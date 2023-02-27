@@ -4,7 +4,7 @@ import time
 import sys
 from termcolor import colored, cprint
 
-# character-by-character printing for analog effect.
+# Character-by-character printing for analog effect
 # source: https://stackoverflow.com/questions/9246076/how-to-print-one-character-at-a-time-on-one-line 
 def sprint(s):
     for c in s:
@@ -12,6 +12,7 @@ def sprint(s):
         sys.stdout.flush()
         time.sleep(0.02)
 
+# Rest adds time between execution of commands for more natural user experience 
 def rest(x):
     time.sleep(x*0.5)
 
@@ -35,7 +36,7 @@ def welcome2():
     print("and credits automatically deducted from your account.")
     rest(4)
 
-# function for printing dict output in a box - no animation
+# Print dict output in a box - line by line printing for faster analog effect
 def box_print(x):
     width = 58
     blank_line = "#" + " "*(width - 2) + "#"
@@ -50,10 +51,9 @@ def box_print(x):
     print(blank_line)
     rest(0.2)
 
-    
     longest_key = max(daily_offering.keys(), key=len)
-
     counter = 1
+
     for k, v in daily_offering.items():
         standard_entry = f"#    {counter}. {k}" +" "*10 + f"{v} credits"
         shorter_entry = f"#    {counter}. {k}" +" "*10 + " "*(len(longest_key) - len(k)) +f"{v} credits"
@@ -72,10 +72,12 @@ def box_print(x):
     print("#"*width)
     rest(1)
 
+# Update the user on their credit balance
 def balance():
     print(f"You have {credits} credits.")
     rest(2)
 
+# All user interaction with the program
 def interactive():
     global credits
     global total
@@ -117,7 +119,7 @@ def interactive():
                 elif approval.lower() == "n":
                     user_input == True
 
-# Summarize the order - with animation
+# Summarize the order - with character-by-character printing
 def order_summary2():
     width = 40
     blank_line = "#" + " "*(width - 2) + "#"
@@ -148,8 +150,8 @@ def order_summary2():
     print("#"*width)
 
 # Declare initial variables
-preparations = {"canned", "boiled", "preserved", "fermented", "powdered", "gluten-free", "dehydrated", "pickled", "frozen", "salted", "reconstituted", "gelatinated", "irradiated", "salvaged", "cloned", "mutant"}
-foods = {"lichen", "bananas", "hog jowl", "mudfish", "bird eggs", "pasta", "broth", "onions", "berries", "shellfish", "cheese", "cow's milk", "squash", "yeast protein", "tree bark", "slime", "rat"}
+preparations = {"canned", "preserved", "fermented", "powdered", "gluten-free", "dehydrated", "pickled", "frozen", "reconstituted", "gelatinated", "irradiated", "salvaged", "cloned", "mutant"}
+foods = {"lichen", "bananas", "hog jowl", "mudfish", "bird eggs", "broth", "onions", "berries", "shellfish", "cheese", "cow's milk", "squash", "yeast protein", "tree bark", "slime", "rat"}
 goods = set()
 prices = set()
 credits = 100
@@ -157,18 +159,15 @@ order = []
 total = 0
 
 # Create a random combination of elements each time the program is run
-while len(preparations) > 7:                                #Not all elements are used each time for variety
+while len(preparations) > 5:                                #Not all elements are used each time for variety
     goods.add(preparations.pop() + " " + foods.pop())
 while len(prices) < len(goods):
     prices.add((random.randint(10, 50)))                    #Generate some prices
 daily_offering = dict(zip(goods,prices))                    #Associate goods with prices
 numbers = list(range(1, 10))
 numbered_offering = dict(zip(numbers,daily_offering.items()))
-print(numbered_offering)
 
-
-
-
+# Run the actual program
 welcome2()
 interactive()
 order_summary2()
