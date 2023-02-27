@@ -12,6 +12,9 @@ def sprint(s):
         sys.stdout.flush()
         time.sleep(0.02)
 
+def rest(x):
+    time.sleep(x*0.5)
+
 # Welcome message - with animation
 def welcome2():
     welcome_line1 = " Welcome to the Food Repository "
@@ -26,8 +29,11 @@ def welcome2():
     sprint(blank_line.center(50, "#") + "\n")
     sprint("#"*50 + "\n")
     sprint("#"*50 + "\n")
-    print("\nYour order will be retrieved from the warehouse,\
-    \nand credits automatically deducted from your account.")
+    rest(1)
+    print("\nYour order will be retrieved from the warehouse,")
+    rest(2)
+    print("and credits automatically deducted from your account.")
+    rest(4)
 
 # function for printing dict output in a box - no animation
 def box_print(x):
@@ -36,9 +42,14 @@ def box_print(x):
     title = "#" + "AVAILABLE TODAY".center(width - 2) + "#"
     print("\n")
     print("#"*width)
+    rest(0.2)
     print(blank_line)
+    rest(0.2)
     print(title)
+    rest(0.2)
     print(blank_line)
+    rest(0.2)
+
     
     longest_key = max(daily_offering.keys(), key=len)
 
@@ -50,43 +61,20 @@ def box_print(x):
         shorter_closer = " "*(width - len(shorter_entry) - 1) + "#"
         if k == longest_key:
             print(standard_entry + standard_closer)
+            rest(0.2)
             counter += 1
         else:
             print(shorter_entry + shorter_closer)
+            rest(0.2)
             counter += 1
     print(blank_line)
+    rest(0.2)
     print("#"*width)
-
-# function for printing dict output in a box - with animation 
-def box_print2(x):
-    width = 58
-    blank_line = "#" + " "*(width - 2) + "#"
-    title = "#" + "AVAILABLE TODAY".center(width - 2) + "#"
-    print("\n")
-    sprint("#"*width + "\n")
-    print(blank_line)
-    sprint(title + "\n")
-    print(blank_line)
-    
-    longest_key = max(daily_offering.keys(), key=len)
-
-    counter = 1
-    for k, v in daily_offering.items():
-        standard_entry = f"#    {counter}. {k}" +" "*10 + f"{v} credits"
-        shorter_entry = f"#    {counter}. {k}" +" "*10 + " "*(len(longest_key) - len(k)) +f"{v} credits"
-        standard_closer = " "*(width - len(standard_entry) - 1) + "#"
-        shorter_closer = " "*(width - len(shorter_entry) - 1) + "#"
-        if k == longest_key:
-            sprint(standard_entry + standard_closer + "\n")
-            counter += 1
-        else:
-            sprint(shorter_entry + shorter_closer + "\n")
-            counter += 1
-    print(blank_line)
-    sprint("#"*width + "\n")
+    rest(1)
 
 def balance():
     print(f"You have {credits} credits.")
+    rest(2)
 
 def interactive():
     global credits
@@ -96,9 +84,11 @@ def interactive():
         box_print(numbered_offering)
         balance()
         if credits < min(prices):
+            rest(1)
             print("You cannot afford anything else.")
+            rest(2)
             break
-        prompt = input("Enter 1-9 to order or Q to quit ")
+        prompt = input("Enter 1-9 to order or Q to quit: ")
         if prompt.isdigit() == False and prompt.lower() != "q" or prompt == "0":
             print("Invalid input.")
         elif prompt.lower() == "q":
@@ -107,17 +97,23 @@ def interactive():
             prompt = int(prompt)
             foodprice = numbered_offering.get(prompt)
             print(f"1 unit of {foodprice[0]} costs {foodprice[1]} credits.")
+            rest(1)
             if credits < foodprice[1]:
                 cprint(f"\nInsufficient credits ({credits})", "red", attrs=["bold"])
+                rest(1)
                 print("Choose something else.")
+                rest(1)
             else:
                 approval = input("Order? (y/n) ")
                 if approval.lower() == "y":
                     order.append(foodprice[0])
+                    rest(1)
                     print(f"{foodprice[0].capitalize()} ordered.")
                     credits -= foodprice[1]
+                    rest(1)
                     print(f"{foodprice[1]} credits deducted.")
                     total += foodprice[1]
+                    rest(1)
                 elif approval.lower() == "n":
                     user_input == True
 
@@ -145,7 +141,7 @@ def order_summary2():
         for item in order_set:
             sprint("#" + f"{item}".center(width - 2) + "#" + "\n")
     else:
-        print("#" + "Nothing".center(width - 2) + "#" + "\n")
+        print("#" + "Nothing".center(width - 2) + "#")
     print(blank_line)
     sprint("#" + f"You spent {total} credits.".center(width - 2) + "#\n")
     print(blank_line)
@@ -161,7 +157,7 @@ order = []
 total = 0
 
 # Create a random combination of elements each time the program is run
-while len(preparations) > 8:                                #Not all elements are used each time for variety
+while len(preparations) > 7:                                #Not all elements are used each time for variety
     goods.add(preparations.pop() + " " + foods.pop())
 while len(prices) < len(goods):
     prices.add((random.randint(10, 50)))                    #Generate some prices

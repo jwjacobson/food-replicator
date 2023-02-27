@@ -1,4 +1,4 @@
-
+# These are alternate versions of functions that I didn't end up using in the final program.
 # Welcome message - no animation
 def welcome():
     welcome_line1 = " Welcome to the Food Repository "
@@ -46,3 +46,31 @@ def order_summary():
     print(blank_line)
     print("#"*width)
 
+
+# function for printing dict output in a box - with animation 
+def box_print2(x):
+    width = 58
+    blank_line = "#" + " "*(width - 2) + "#"
+    title = "#" + "AVAILABLE TODAY".center(width - 2) + "#"
+    print("\n")
+    sprint("#"*width + "\n")
+    print(blank_line)
+    sprint(title + "\n")
+    print(blank_line)
+    
+    longest_key = max(daily_offering.keys(), key=len)
+
+    counter = 1
+    for k, v in daily_offering.items():
+        standard_entry = f"#    {counter}. {k}" +" "*10 + f"{v} credits"
+        shorter_entry = f"#    {counter}. {k}" +" "*10 + " "*(len(longest_key) - len(k)) +f"{v} credits"
+        standard_closer = " "*(width - len(standard_entry) - 1) + "#"
+        shorter_closer = " "*(width - len(shorter_entry) - 1) + "#"
+        if k == longest_key:
+            sprint(standard_entry + standard_closer + "\n")
+            counter += 1
+        else:
+            sprint(shorter_entry + shorter_closer + "\n")
+            counter += 1
+    print(blank_line)
+    sprint("#"*width + "\n")
